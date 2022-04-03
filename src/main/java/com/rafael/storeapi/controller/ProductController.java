@@ -16,24 +16,17 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping
-    public Page<ProductDTO> listProdutos(
-            @RequestBody List<String> code,
-            Pageable pageable) {
-        return productService.listAll(code, pageable);
+    public Page<ProductDTO> listProducts(@RequestBody(required = false) List<String> codes, Pageable pageable) {
+        return productService.listAll(codes, pageable);
     }
 
-    @GetMapping("/page")
-    public Page<ProductDTO> listPessoas(Pageable pageable) {
-        return productService.listAll(pageable);
+    @PostMapping
+    public ProductDTO registerProduct(@RequestBody ProductDTO productDTO) {
+        return productService.registerProduct(productDTO);
     }
-//
-//    @PostMapping("/")
-//    public PessoaDTO criarPessoa(@RequestBody PessoaDTO pessoa) {
-//        return pessoaService.criarPessoa(pessoa);
-//    }
-//
-//    @DeleteMapping("/{cpf}")
-//    public void deletePessoa(@PathVariable String cpf) {
-//        pessoaService.deletePessoa(cpf);
-//    }
+
+    @DeleteMapping
+    public List<ProductDTO> deleteProducts(@RequestBody List<String> codes) {
+        return productService.deleteProducts(codes);
+    }
 }
