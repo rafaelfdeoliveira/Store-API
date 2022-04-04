@@ -1,7 +1,7 @@
 package com.rafael.storeapi.model;
 
 import com.rafael.storeapi.dto.ProductDTO;
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.*;
 
 import java.util.ArrayList;
