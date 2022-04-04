@@ -1,6 +1,7 @@
 package com.rafael.storeapi.dto;
 
 import com.rafael.storeapi.model.Product;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,17 +9,14 @@ import java.util.List;
 
 @Getter
 @Setter
+@AllArgsConstructor
 public class ProductDTO {
     private String code;
     private Float unityPrice;
     private Integer quantity;
 
     public static ProductDTO convert(Product product) {
-        ProductDTO dto = new ProductDTO();
-        dto.setCode(product.getCode());
-        dto.setUnityPrice(product.getUnityPrice());
-        dto.setQuantity(product.getQuantity());
-        return dto;
+        return new ProductDTO(product.getCode(), product.getUnityPrice(), product.getQuantity());
     }
 
     public static List<ProductDTO> convert(List<Product> products) {
@@ -26,5 +24,15 @@ public class ProductDTO {
                 .stream()
                 .map(ProductDTO::convert)
                 .toList();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof ProductDTO other)) return false;
+
+        if (!this.getCode().equals(other.getCode())) return false;
+        if (!this.getUnityPrice().equals(other.getUnityPrice())) return false;
+        if (!this.getQuantity().equals(other.getQuantity())) return false;
+        return true;
     }
 }

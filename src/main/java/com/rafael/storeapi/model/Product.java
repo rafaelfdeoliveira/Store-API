@@ -18,7 +18,7 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(unique = true)
+    @Column
     private String code;
 
     @Column()
@@ -49,6 +49,16 @@ public class Product {
         purchases.add(purchase);
         product.setPurchases(purchases);
         return product;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Product other)) return false;
+
+        if (!this.getCode().equals(other.getCode())) return false;
+        if (!this.getUnityPrice().equals(other.getUnityPrice())) return false;
+        if (!this.getQuantity().equals(other.getQuantity())) return false;
+        return true;
     }
 
 }
