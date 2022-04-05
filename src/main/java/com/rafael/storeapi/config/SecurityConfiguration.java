@@ -13,20 +13,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .httpBasic()
                 .and()
                 .authorizeRequests()
-                .antMatchers("/pessoa/**").authenticated()
-                .antMatchers("/emprestimo/**").authenticated();
+                .antMatchers("/produto/**").authenticated()
+                .antMatchers("/compra/**").authenticated();
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth
                 .inMemoryAuthentication()
-                .withUser("user01")
-                .password("{noop}user01")
-                .roles("ADMIN")
-                .and()
-                .withUser("user02")
-                .password("{noop}user02")
-                .roles("CLIENT");
+                .withUser("rafael")
+                .password("{noop}123")
+                .roles("ADMIN");
     }
 }
