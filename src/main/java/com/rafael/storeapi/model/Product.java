@@ -4,7 +4,6 @@ import com.rafael.storeapi.dto.ProductDTO;
 import javax.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -45,9 +44,7 @@ public class Product {
 
     public static Product convert(ProductDTO dto, Purchase purchase) {
         Product product = convert(dto);
-        List<Purchase> purchases = new ArrayList<>();
-        purchases.add(purchase);
-        product.setPurchases(purchases);
+        product.setPurchases(List.of(purchase));
         return product;
     }
 

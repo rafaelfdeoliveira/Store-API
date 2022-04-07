@@ -24,7 +24,7 @@ public class StoreApiApplication {
 								  PasswordEncoder encoder) {
 		return (args) -> {
 			User user = new User();
-			user.setUserName("rafael");
+			user.setUserName("adminMaster");
 			user.setPassword(encoder.encode("123"));
 			user.setEnabled(true);
 			userRepository.save(user);

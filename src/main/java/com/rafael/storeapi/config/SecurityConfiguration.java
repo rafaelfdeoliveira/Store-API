@@ -23,7 +23,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/produto/**").authenticated()
                 .antMatchers("/compra/**").authenticated()
                 .antMatchers("/user").authenticated()
-                .antMatchers("/user/registration").permitAll()
+                .antMatchers("/user/sign_out").authenticated()
+                .antMatchers("/user/sign_in").permitAll()
                 .antMatchers("/user/admin").hasAuthority("ADMIN");
     }
 

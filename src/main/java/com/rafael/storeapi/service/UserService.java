@@ -6,9 +6,14 @@ import com.rafael.storeapi.model.Authority;
 import com.rafael.storeapi.model.User;
 import com.rafael.storeapi.repository.AuthorityRepository;
 import com.rafael.storeapi.repository.UserRepository;
+import com.rafael.storeapi.repository.specification.UserSpecification;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
 import java.util.ArrayList;
@@ -21,29 +26,42 @@ public class UserService {
     private final AuthorityRepository authorityRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public UserDTO createUser(UserDTO userDTO) {
-        User userDB = this.registerUser(userDTO);
-        userDTO.getRoles()
-                .forEach(a -> saveAuthority(userDB, a));
-        User registeredUser = userRepository.findById(userDB.getUserName()).orElseThrow(() -> new RuntimeException("User Registration failed"));
-        return UserDTO.convert(registeredUser);
+    public Page<UserDTO> listUsers(List<String> userNameList, Pageable pageable) {
+        if (userNameList == null) return userRepository.findAll(pageable).map(UserDTO::convert);
+        return userRepository
+                .findAll(UserSpecification.filterByUserNameList(userNameList), pageable)
+                .map(UserDTO::convert);
     }
 
-    public UserDTO deleteUser(String userName) {
-        User userDB = userRepository.findById(userName).orElseThrow(() -> new RuntimeException("User " + userName + " not found"));
-        userRepository.delete(userDB);
+    public UserDTO createUser(UserDTO userDTO) {
+        if (userDTO.getUserName().equals("adminMaster")) throw new ResponseStatusException(HttpStatus.FORBIDDEN, "userName cannot be adminMaster");
+        User userDB = this.registerUser(userDTO);
+        List<Authority> authorities = new ArrayList<>();
+        userDTO.getRoles()
+                .forEach(a -> authorities.add(saveAuthority(userDB, a)));
+        userDB.setAuthorities(authorities);
         return UserDTO.convert(userDB);
     }
 
-    public UserDTO createClient(UserDTO userDTO) {
-        User userDB = this.registerUser(userDTO);
-        saveAuthority(userDB, "CLIENT");
-        User registeredUser = userRepository.findById(userDB.getUserName()).orElseThrow(() -> new RuntimeException("Client Registration failed"));
-        return UserDTO.convert(registeredUser);
+    public List<UserDTO> deleteUsers(List<String> userNameList) {
+        userNameList.removeAll(List.of("adminMaster"));
+        List<User> userDBList = userRepository.findAllById(userNameList);
+        userRepository.deleteAll(userDBList);
+        return userDBList.stream().map(UserDTO::convert).toList();
     }
 
-    public UserDTO deleteClient(Principal principal) {
-        return deleteUser(principal.getName());
+    public UserDTO createClient(UserDTO userDTO) {
+        if (userDTO.getUserName().equals("adminMaster")) throw new ResponseStatusException(HttpStatus.FORBIDDEN, "userName cannot be adminMaster");
+        User userDB = this.registerUser(userDTO);
+        Authority authority = saveAuthority(userDB, "CLIENT");
+        userDB.setAuthorities(List.of(authority));
+        return UserDTO.convert(userDB);
+    }
+
+    public List<UserDTO> deleteClients(Principal principal) {
+        List<String> userNameList = new ArrayList<>();
+        userNameList.add(principal.getName());
+        return deleteUsers(userNameList);
     }
 
     private User registerUser(UserDTO userDTO) {
@@ -58,8 +76,8 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    private void saveAuthority(User user, String role) {
+    private Authority saveAuthority(User user, String role) {
         Authority authority = Authority.convert(user, role);
-        authorityRepository.save(authority);
+        return authorityRepository.save(authority);
     }
 }
