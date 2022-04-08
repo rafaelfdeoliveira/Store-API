@@ -3,6 +3,7 @@ package com.rafael.storeapi.dto;
 import com.rafael.storeapi.model.Product;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class ProductDTO {
     private String code;
     private Float unityPrice;

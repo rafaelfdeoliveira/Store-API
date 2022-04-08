@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.security.test.context.support.WithMockUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,7 @@ public class ProductRepositoryTests {
     @Autowired
     private ProductRepository productRepository;
 
+    @WithMockUser
     @Test
     public void testFindAll() {
         Pageable pageable = PageRequest.of(0, 5);
