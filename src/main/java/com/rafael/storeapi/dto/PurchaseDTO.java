@@ -11,10 +11,13 @@ import java.util.List;
 @Getter
 @Setter
 public class PurchaseDTO {
+    private String identificador;
+    private String identificadorCliente;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime date;
     private String cpf;
     private List<ProductDTO> products;
+    private String status;
 
     public static PurchaseDTO convert(Purchase purchase) {
         PurchaseDTO dto = new PurchaseDTO();
