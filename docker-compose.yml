@@ -1,0 +1,54 @@
+version: "3"
+services:
+  product-api:
+    image: hnvpmpd6lan4n47/product-api
+    ports:
+      - "8082:8381"
+    networks:
+      - store-api
+    depends_on:
+      - mongoDB
+    environment:
+      - spring.data.mongodb.host=mongoDb
+      - spring.data.mongodb.port=27017
+
+  purchase-api:
+    image: hnvpmpd6lan4n47/purchase-api
+    ports:
+      - "8081:8080"
+    networks:
+      - store-api
+    depends_on:
+      - postgresDB
+    environment:
+      - spring.datasource.url=jdbc:postgresql://postgresDB/store
+  
+  user-api:
+    image: hnvpmpd6lan4n47/user-api
+    ports:
+      - "8080:8080"
+    networks:
+      - store-api
+    depends_on:
+      - postgresDB
+    environment:
+      - spring.datasource.url=jdbc:postgresql://postgresDB/store
+
+  mongoDB:
+    image: mongo
+    restart: always
+    networks:
+      - store-api
+
+  postgresDB:
+    image:  postgres
+    restart: always
+    networks:
+      - store-api
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=store
+
+networks:
+  store-api:

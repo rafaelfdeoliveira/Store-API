@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -23,7 +24,7 @@ public class UserDTO {
         dto.setRoles(user.getAuthorities()
                 .stream()
                 .map((authority -> authority.getAuthorityKey().getAuthority()))
-                .toList());
+                .collect(Collectors.toList()));
         return dto;
     }
 }

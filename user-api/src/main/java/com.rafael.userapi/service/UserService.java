@@ -18,6 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -47,7 +48,7 @@ public class UserService {
         userNameList.removeAll(List.of("adminMaster"));
         List<User> userDBList = userRepository.findAllById(userNameList);
         userRepository.deleteAll(userDBList);
-        return userDBList.stream().map(UserDTO::convert).toList();
+        return userDBList.stream().map(UserDTO::convert).collect(Collectors.toList());
     }
 
     public UserDTO createClient(UserDTO userDTO) {

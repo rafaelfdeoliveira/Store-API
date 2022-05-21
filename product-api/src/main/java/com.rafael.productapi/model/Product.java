@@ -7,6 +7,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -16,7 +17,7 @@ import java.util.List;
 @Document
 public class Product {
     @Id
-    private Integer id;
+    private UUID id;
     private String code;
     private Float unityPrice;
     private Integer quantity;
@@ -24,6 +25,7 @@ public class Product {
 
     public static Product convert(ProductDTO dto) {
         Product product = new Product();
+        product.setId(UUID.randomUUID());
         product.setCode(dto.getCode());
         product.setUnityPrice(dto.getUnityPrice());
         product.setQuantity(dto.getQuantity());

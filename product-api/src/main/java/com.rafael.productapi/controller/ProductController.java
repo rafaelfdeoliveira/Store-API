@@ -17,17 +17,17 @@ import java.util.List;
 public class ProductController {
     private final ProductService productService;
 
-    @GetMapping("product")
+    @GetMapping("products")
     public Flux<ProductDTO> listProducts(@RequestBody(required = false) List<String> codes) {
         return productService.listAll(codes);
     }
 
-    @PostMapping("product")
+    @PostMapping("products")
     public Mono<ProductDTO> registerProduct(@RequestBody ProductDTO productDTO) {
         return productService.registerProduct(productDTO);
     }
 
-    @DeleteMapping("product")
+    @DeleteMapping("products")
     public Flux<ProductDTO> deleteProducts(@RequestBody List<String> codes) {
         return productService.deleteProducts(codes);
     }

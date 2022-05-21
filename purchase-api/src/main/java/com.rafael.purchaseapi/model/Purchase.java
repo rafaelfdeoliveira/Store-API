@@ -5,7 +5,6 @@ import javax.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @Setter
@@ -27,21 +26,15 @@ public class Purchase {
     @Column()
     private Float amount;
 
-    @ManyToMany(mappedBy = "purchases", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Product> products;
+    @Column()
+    private String productCode;
 
     public static Purchase convert(PurchaseDTO dto) {
         Purchase purchase = new Purchase();
         purchase.setDate(dto.getDate());
         purchase.setCpf(dto.getCpf());
-        purchase.setAmount(0F);
-        purchase.setProducts(dto.getProducts()
-                .stream()
-                .map(productDTO -> {
-                    purchase.setAmount(purchase.getAmount() + (productDTO.getQuantity() * productDTO.getUnityPrice()));
-                    return Product.convert(productDTO, purchase);
-                })
-                .toList());
+        purchase.setAmount(dto.getAmmount());
+        purchase.setProductCode(dto.getProductCode());
         return purchase;
     }
 }

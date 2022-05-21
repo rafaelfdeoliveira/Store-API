@@ -8,5 +8,7 @@ import reactor.core.publisher.Flux;
 @Repository
 public interface ProductRepository extends ReactiveMongoRepository<Product, String> {
 
-    Flux<Product> findAllByCode(Flux<String> code);
+    Flux<Product> findAllByCode(String code);
+
+
 }

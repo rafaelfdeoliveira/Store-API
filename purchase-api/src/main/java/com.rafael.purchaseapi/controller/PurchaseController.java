@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/compra")
+@RequestMapping("/purchase")
 @RequiredArgsConstructor
 public class PurchaseController {
     private final PurchaseService purchaseService;

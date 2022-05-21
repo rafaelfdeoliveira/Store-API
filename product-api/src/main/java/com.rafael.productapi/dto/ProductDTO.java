@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Getter
 @Setter
@@ -22,6 +23,10 @@ public class ProductDTO {
 
     public static Flux<ProductDTO> convert(Flux<Product> products) {
         return products.map(ProductDTO::convert);
+    }
+
+    public static Mono<ProductDTO> convert(Mono<Product> product) {
+        return product.map(ProductDTO::convert);
     }
 
     @Override
