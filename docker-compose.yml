@@ -39,6 +39,8 @@ services:
     restart: always
     networks:
       - store-api
+    volumes:
+      - database:/mongo
 
   postgresDB:
     image:  postgres
@@ -49,6 +51,37 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=store
+    volumes:
+      - database:/postgres
+
+  prometheus:
+    image: prom/prometheus:v2.35.0
+    depends_on:
+      - product-api
+    networks:
+      - store-api
+    ports:
+      - "9090:9090"
+    restart: always
+    volumes:
+      - ./prometheus:/etc/prometheus
+      - prometheus-data:/prometheus
+    command: --config.file=/etc/prometheus/prometheus.yml
+
+  grafana:
+    image: grafana/grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    depends_on:
+      - prometheus
+    ports:
+      - "3000:3000"
+    networks:
+      - store-api
 
 networks:
   store-api:
+
+volumes:
+  prometheus-data:
+  database:
