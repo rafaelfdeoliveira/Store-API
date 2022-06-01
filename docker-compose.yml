@@ -1,0 +1,106 @@
+version: "3"
+services:
+  product-api:
+    build:
+      context: ./product-api
+    image: hnvpmpd6lan4n47/product-api
+    ports:
+      - "8082:8381"
+    networks:
+      - store-api
+    depends_on:
+      - mongoDB
+      - eureka-server
+    environment:
+      - spring.data.mongodb.host=mongoDb
+      - spring.data.mongodb.port=27017
+      - eureka.client.serviceUrl.defaultZone=http://eureka-server:8761/eureka
+
+  purchase-api:
+    build:
+      context: ./purchase-api
+    image: hnvpmpd6lan4n47/purchase-api
+    ports:
+      - "8081:8384"
+    networks:
+      - store-api
+    depends_on:
+      - postgresDB
+      - eureka-server
+    environment:
+      - spring.datasource.url=jdbc:postgresql://postgresDB/store
+      - eureka.client.serviceUrl.defaultZone=http://eureka-server:8761/eureka
+  
+  user-api:
+    build:
+      context: ./user-api
+    image: hnvpmpd6lan4n47/user-api
+    ports:
+      - "8083:8382"
+    networks:
+      - store-api
+    depends_on:
+      - postgresDB
+      - eureka-server
+    environment:
+      - spring.datasource.url=jdbc:postgresql://postgresDB/store
+      - eureka.client.serviceUrl.defaultZone=http://eureka-server:8761/eureka
+
+  mongoDB:
+    image: mongo
+    restart: always
+    networks:
+      - store-api
+    volumes:
+      - database:/mongo
+
+  postgresDB:
+    image:  postgres
+    restart: always
+    networks:
+      - store-api
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=store
+    volumes:
+      - database:/postgres
+
+  prometheus:
+    image: prom/prometheus:v2.35.0
+    depends_on:
+      - product-api
+      - purchase-api
+      - user-api
+    networks:
+      - store-api
+    restart: always
+    volumes:
+      - ./prometheus:/etc/prometheus
+      - prometheus-data:/prometheus
+    command: --config.file=/etc/prometheus/prometheus.yml
+
+  grafana:
+    image: grafana/grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    depends_on:
+      - prometheus
+    ports:
+      - "3000:3000"
+    networks:
+      - store-api
+
+  eureka-server:
+    build:
+      context: ./eureka-server
+    image: hnvpmpd6lan4n47/eureka-server
+    networks:
+      - store-api
+    
+networks:
+  store-api:
+
+volumes:
+  prometheus-data:
+  database:
