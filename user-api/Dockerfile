@@ -8,4 +8,4 @@ COPY --from=build /target/user-api-1.0-SNAPSHOT.jar ./
 
 ENTRYPOINT ["java","-jar","user-api-1.0-SNAPSHOT.jar"]
 
-EXPOSE 8080
+EXPOSE 8382

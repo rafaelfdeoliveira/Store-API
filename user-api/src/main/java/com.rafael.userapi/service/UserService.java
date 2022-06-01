@@ -35,7 +35,8 @@ public class UserService {
     }
 
     public UserDTO createUser(UserDTO userDTO) {
-        if (userDTO.getUserName().equals("adminMaster")) throw new ResponseStatusException(HttpStatus.FORBIDDEN, "userName cannot be adminMaster");
+        List<User> usersWithSameUserName = userRepository.findAll(UserSpecification.filterByUserNameList(List.of(userDTO.getUserName())));
+        if (usersWithSameUserName.size() > 0) throw new ResponseStatusException(HttpStatus.ALREADY_REPORTED, "userName already exists");
         User userDB = this.registerUser(userDTO);
         List<Authority> authorities = new ArrayList<>();
         userDTO.getRoles()
@@ -52,7 +53,8 @@ public class UserService {
     }
 
     public UserDTO createClient(UserDTO userDTO) {
-        if (userDTO.getUserName().equals("adminMaster")) throw new ResponseStatusException(HttpStatus.FORBIDDEN, "userName cannot be adminMaster");
+        List<User> usersWithSameUserName = userRepository.findAll(UserSpecification.filterByUserNameList(List.of(userDTO.getUserName())));
+        if (usersWithSameUserName.size() > 0) throw new ResponseStatusException(HttpStatus.ALREADY_REPORTED, "userName already exists");
         User userDB = this.registerUser(userDTO);
         Authority authority = saveAuthority(userDB, "CLIENT");
         userDB.setAuthorities(List.of(authority));
