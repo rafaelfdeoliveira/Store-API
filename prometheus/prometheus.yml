@@ -17,4 +17,4 @@ scrape_configs:
     metrics_path: '/actuator/prometheus' # Como obter as métricas
     scrape_interval: 5s
     static_configs:
-      - targets: [ 'product-api:8381', 'purchase-api:8080', 'user-api:8382' ]
+      - targets: [ 'product-api:8381', 'purchase-api:8384', 'user-api:8382' ]
