@@ -95,6 +95,8 @@ services:
     build:
       context: ./eureka-server
     image: hnvpmpd6lan4n47/eureka-server
+    ports:
+      - "8761:8761"
     networks:
       - store-api
     
